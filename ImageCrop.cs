@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
@@ -177,8 +178,11 @@ namespace BrianMed.SmartCrop
 
             byte[] bytesInput;
 
-            if (input.TryGetSinglePixelSpan(out var pixelSpan)) {
-                bytesInput = MemoryMarshal.AsBytes(pixelSpan).ToArray();
+            var memGroup = input.GetPixelMemoryGroup();
+            
+
+            if (input.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> pixelSpan)) {
+                bytesInput = MemoryMarshal.AsBytes(pixelSpan.Span).ToArray();
             } else {
                 throw new Exception("Issue with memory");
             }
@@ -187,8 +191,8 @@ namespace BrianMed.SmartCrop
 
             for (var y = 0; y < h; y++)
             {
-                Span<Rgba32> pixelsInput = input.GetPixelRowSpan(y);
-                Span<Rgba32> pixelsOutput = output.GetPixelRowSpan(y);
+                Span<Rgba32> pixelsInput = input.DangerousGetPixelRowMemory(y).Span;
+                Span<Rgba32> pixelsOutput = output.DangerousGetPixelRowMemory(y).Span;
 
                 for (var x = 0; x < w; x++)
                 {
@@ -269,8 +273,8 @@ namespace BrianMed.SmartCrop
 
             for (var y = 0; y < input.Height; y++)
             {
-                Span<Rgba32> pixelsInput = input.GetPixelRowSpan(y);
-                Span<Rgba32> pixelsOutput = output.GetPixelRowSpan(y);
+                Span<Rgba32> pixelsInput = input.DangerousGetPixelRowMemory(y).Span;
+                Span<Rgba32> pixelsOutput = output.DangerousGetPixelRowMemory(y).Span;
 
                 for (var x = 0; x < input.Width; x++)
                 {
@@ -317,8 +321,8 @@ namespace BrianMed.SmartCrop
 
             for (var y = 0; y < input.Height; y++)
             {
-                Span<Rgba32> pixelsInput = input.GetPixelRowSpan(y);
-                Span<Rgba32> pixelsOutput = output.GetPixelRowSpan(y);
+                Span<Rgba32> pixelsInput = input.DangerousGetPixelRowMemory(y).Span;
+                Span<Rgba32> pixelsOutput = output.DangerousGetPixelRowMemory(y).Span;
 
                 for (var x = 0; x < input.Width; x++)
                 {
@@ -359,13 +363,13 @@ namespace BrianMed.SmartCrop
 
             for (var y = 0; y < height; y++)
             {
-                Span<Rgba32> pixelsInput = image.GetPixelRowSpan(y);
-                Span<Rgba32> pixelsOutput = output.GetPixelRowSpan(y);
+                Span<Rgba32> pixelsInput = image.DangerousGetPixelRowMemory(y).Span;
+                Span<Rgba32> pixelsOutput = output.DangerousGetPixelRowMemory(y).Span;
 
                 byte[] bytesInput;
 
-                if (image.TryGetSinglePixelSpan(out var pixelSpan)) {
-                    bytesInput = MemoryMarshal.AsBytes(pixelSpan).ToArray();
+                if (image.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> pixelSpan)) {
+                    bytesInput = MemoryMarshal.AsBytes(pixelSpan.Span).ToArray();
                 } else {
                     throw new Exception("Issue with memory");
                 }
@@ -432,8 +436,8 @@ namespace BrianMed.SmartCrop
         {
             byte[] bytesInput;
 
-            if (image.TryGetSinglePixelSpan(out var pixelSpan)) {
-                bytesInput = MemoryMarshal.AsBytes(pixelSpan).ToArray();
+            if (image.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> pixelSpan)) {
+                bytesInput = MemoryMarshal.AsBytes(pixelSpan.Span).ToArray();
             } else {
                 throw new Exception("Issue with memory");
             }
@@ -498,8 +502,8 @@ namespace BrianMed.SmartCrop
 
             byte[] bytesInput;
 
-            if (output.TryGetSinglePixelSpan(out var pixelSpan)) {
-                bytesInput = MemoryMarshal.AsBytes(pixelSpan).ToArray();
+            if (output.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> pixelSpan)) {
+                bytesInput = MemoryMarshal.AsBytes(pixelSpan.Span).ToArray();
             } else {
                 throw new Exception("Issue with memory");
             }
